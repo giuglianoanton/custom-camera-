@@ -40,10 +40,10 @@ struct CameraView: View {
                             self.isFlashOn.toggle()
                             if isFlashOn{
                                 cameraBack.flashMode = .on
-                                print(cameraBack.flashMode)
+                                
                             }else{
                                 cameraBack.flashMode = .off
-                                print(cameraBack.flashMode)
+                                
                             }
                             
                             
@@ -62,6 +62,30 @@ struct CameraView: View {
                                     Image(systemName: "line.diagonal")
                                         .rotationEffect(Angle(degrees: 90))
                                         .font(.system(size: 20))
+                                        .foregroundColor(.white)
+                                }
+                            }
+                        })
+                        
+                        Button(action: {
+                            
+                            cameraBack.isCompressed.toggle()
+                            
+                            
+                        }, label: {
+                            ZStack{
+                                
+                                Circle()
+                                    .stroke(Color.white, lineWidth: 0.5)
+                                    .frame(width: 25, height: 25)
+                                if cameraBack.isCompressed{
+                                    Image(systemName: "rectangle.compress.vertical")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.white)
+                                }else{
+                                    Image(systemName: "rectangle.expand.vertical")
+                                        
+                                        .font(.system(size: 16))
                                         .foregroundColor(.white)
                                 }
                             }

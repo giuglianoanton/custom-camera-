@@ -32,7 +32,10 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     @Published var device: AVCaptureDevice!
     
     @Published var isBackCameraOn = true
-    @Published var currentFlashMode = "off"
+//    @Published var currentFlashMode = "off"
+    
+    @Published var isCompressed = false
+    
     
     
 //    @Published var input: AVCaptureDeviceInput!
@@ -45,6 +48,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     @Published var flashMode: CurrentFlashMode = .off
     
+    
     //type of flash
     enum CurrentFlashMode {
         case off
@@ -52,7 +56,11 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
         case auto
         
     }
-
+    
+    // focusmode
+    @Published var focusMode:AVCaptureDevice.FocusMode = .continuousAutoFocus
+    
+    
     //check the permissions
     func checkPermissions(){
         switch AVCaptureDevice.authorizationStatus(for: .video) {
@@ -130,16 +138,40 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
             //start the configuration
             
             self.session.beginConfiguration()
+            //enable the highest preset activable on the device but it's compressed
+            session.sessionPreset = AVCaptureSession.Preset.photo
+            //to change more stuff for a full control on the device
+//            print(self.device.formats)
+            //self.device.activeFormat)
+            //self.device.activeDepthDataFormat!
+            
             
             // store the capture device
-            //devicetype for iphone13 .builtInUltraWideCamera
-            //let device = AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .unspecified)
             
             //store the input from this device
+            
+//
+            do{
+                
+                try self.device.lockForConfiguration()
+                self.device.isFocusModeSupported(focusMode)
+                self.device.unlockForConfiguration()
+            }
+            
+            catch{
+                    print(error.localizedDescription)
+                }
+                // locked successfully, go on with configuration
+                // currentDevice.unlockForConfiguration()
+                
+            
+            
             
             let input = try AVCaptureDeviceInput(device: self.device)
             //to enable the highest resolution
             self.output.isHighResolutionCaptureEnabled = true
+            
+            
             
 //            var photoQualityPrioritization: AVCapturePhotoOutput.QualityPrioritization = .quality
 //            self.output.maxPhotoQualityPrioritization = photoQualityPrioritization
@@ -166,8 +198,9 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     }
     
     // get settings for the photo, settings have to be init at each shooting
-    func getSettings(camera: AVCaptureDevice, flashMode: CurrentFlashMode) -> AVCapturePhotoSettings {
-        let settings = AVCapturePhotoSettings()
+    func getSettings(camera: AVCaptureDevice, flashMode: CurrentFlashMode, isCompressed: Bool) -> AVCapturePhotoSettings {
+//        let settings = AVCapturePhotoSettings()
+        
 //        let presetSession = AVCaptureSession.Preset(rawValue: AVAssetExportPreset3840x2160)
 //        let rawFormat = output.availableRawPhotoPixelFormatTypes.first
 //        settings = AVCapturePhotoSettings(rawPixelFormatType: OSType(rawFormat!))
@@ -175,11 +208,16 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
 //        let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
 //        settings.rawPhotoPixelFormatType
 //        let settings = AVCapturePhotoSettings(rawPixelFormatType: OSType(self.photoOutput!.availableRawPhotoPixelFormatTypes[0]), processedFormat: nil)
-        
+        var settings = AVCapturePhotoSettings()
         //saving uncompressed
-//        let bgraFormat: [String: AnyObject] = [kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_32BGRA)]
-        //print(self.output.availablePhotoPixelFormatTypes)
-//        let settings = AVCapturePhotoSettings(format: bgraFormat)
+        if isCompressed{
+            settings = AVCapturePhotoSettings()
+        }else{
+            let bgraFormat: [String: AnyObject] = [kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_32BGRA)]
+            print(self.output.availablePhotoPixelFormatTypes)
+            settings = AVCapturePhotoSettings(format: bgraFormat)
+        }
+        
         if camera.hasFlash {
             switch flashMode {
                case .auto: settings.flashMode = .auto
@@ -198,7 +236,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
             
 //            var photoQualityPrioritization: AVCapturePhotoOutput.QualityPrioritization = .quality
             
-            let settings = self.getSettings(camera: self.device, flashMode: self.flashMode)
+            let settings = self.getSettings(camera: self.device, flashMode: self.flashMode, isCompressed: self.isCompressed)
 //            settings.photoQualityPrioritization = photoQualityPrioritization
             settings.isHighResolutionPhotoEnabled = true
             self.output.capturePhoto(with: settings, delegate: self)
@@ -206,8 +244,6 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
             //self.session.stopRunning()
             print("takephoto")
 //            DispatchQueue.main.async {
-//                let settings = self.getSettings(camera: self.device, flashMode: self.flashMode)
-//                self.output.capturePhoto(with: settings, delegate: self)
                 Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) {
                     timer in self.session.stopRunning()
                 }
