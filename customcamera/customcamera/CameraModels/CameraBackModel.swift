@@ -224,13 +224,13 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
         DispatchQueue.global(qos: .background).async{
                 //self.session.startRunning()
                 
-                DispatchQueue.main.async{
+//                DispatchQueue.main.async{
                     Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) {
                     timer in self.session.startRunning()
                 }
 //                    withAnimation{self.isTaken.toggle()}
 //                    self.isSaved = false
-                }
+//                }
             }
         }
  
@@ -252,19 +252,19 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
         print("savePhoto succeded")
     }
     
-    //save photo
-    func savePhoto(){
-//        DispatchQueue.global(qos: .background).async{
-      Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
-        timer in
-            let image = UIImage(data: self.picData)!
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-            self.isSaved = true
-            print("savePhoto succeded")
-
+//    //save photo
+//    func savePhoto(){
+////        DispatchQueue.global(qos: .background).async{
+//      Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
+//        timer in
+//            let image = UIImage(data: self.picData)!
+//            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+//            self.isSaved = true
+//            print("savePhoto succeded")
+//
+////        }
 //        }
-        }
-    }
+//    }
     
     
 }

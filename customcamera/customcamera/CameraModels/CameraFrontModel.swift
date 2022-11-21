@@ -5,16 +5,16 @@
 //  Created by Antonella Giugliano on 21/11/22.
 //
 
+
 import Foundation
 import SwiftUI
 import AVFoundation
 
+
 class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     
-    private var photoOutput: AVCapturePhotoOutput?
-    
-    @Published var isTaken = false
+    //@Published var isTaken = false
     
     //initialize a capture session
     @Published var session = AVCaptureSession()
@@ -33,6 +33,7 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
     @Published var device: AVCaptureDevice!
     
     @Published var isBackCameraOn = true
+    @Published var currentFlashMode = "off"
     
     
 //    @Published var input: AVCaptureDeviceInput!
@@ -43,6 +44,7 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
     @Published var picData = Data(count: 0)
     
     
+
     //check the permissions
     func checkPermissions(){
         switch AVCaptureDevice.authorizationStatus(for: .video) {
@@ -72,6 +74,7 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
         }
     }
     
+    //set Device among all devices available
     func setDevice(){
         var allCaptureDevices: [AVCaptureDevice] {
             AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInTrueDepthCamera, .builtInDualCamera, .builtInDualWideCamera, .builtInWideAngleCamera, .builtInDualWideCamera], mediaType: .video, position: .unspecified).devices
@@ -111,7 +114,8 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
         
        self.device = availableCaptureDevices[1]
     }
-   
+    
+    
     //setting the session is allowed only if permissions have been provided
     func setSession(){
         do{
@@ -124,8 +128,14 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
             //let device = AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .unspecified)
             
             //store the input from this device
-            //let input = try AVCaptureDeviceInput(device: self.device)
+            
             let input = try AVCaptureDeviceInput(device: self.device)
+            //to enable the highest resolution
+            self.output.isHighResolutionCaptureEnabled = true
+            
+//            var photoQualityPrioritization: AVCapturePhotoOutput.QualityPrioritization = .quality
+//            self.output.maxPhotoQualityPrioritization = photoQualityPrioritization
+            
             //if an input can be added to the session, then add that input to the session
             if self.session.canAddInput(input){
                 self.session.addInput(input)
@@ -137,7 +147,6 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
             //close the configuration
             self.session.commitConfiguration()
             
-            //had hang risk purple alert saying it has to be calledd background
             DispatchQueue.global(qos: .background).async {
                 self.session.startRunning()
             }
@@ -148,60 +157,102 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
         
     }
     
+    // get settings for the photo, settings have to be init at each shooting
+    func getSettings(camera: AVCaptureDevice) -> AVCapturePhotoSettings {
+        let settings = AVCapturePhotoSettings()
+//        let presetSession = AVCaptureSession.Preset(rawValue: AVAssetExportPreset3840x2160)
+//        let rawFormat = output.availableRawPhotoPixelFormatTypes.first
+//        settings = AVCapturePhotoSettings(rawPixelFormatType: OSType(rawFormat!))
+
+//        let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
+//        settings.rawPhotoPixelFormatType
+//        let settings = AVCapturePhotoSettings(rawPixelFormatType: OSType(self.photoOutput!.availableRawPhotoPixelFormatTypes[0]), processedFormat: nil)
+        
+        //saving uncompressed
+//        let bgraFormat: [String: AnyObject] = [kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_32BGRA)]
+        //print(self.output.availablePhotoPixelFormatTypes)
+//        let settings = AVCapturePhotoSettings(format: bgraFormat)
+        
+        return settings
+    }
+    
     //take photo
     func takePhoto(){
 
         DispatchQueue.global(qos: .background).async {
-
-            self.output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+            
+//            var photoQualityPrioritization: AVCapturePhotoOutput.QualityPrioritization = .quality
+            
+            let settings = self.getSettings(camera: self.device)
+//            settings.photoQualityPrioritization = photoQualityPrioritization
+            settings.isHighResolutionPhotoEnabled = true
+            self.output.capturePhoto(with: settings, delegate: self)
+//            self.output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
             //self.session.stopRunning()
-
-            DispatchQueue.main.async {
+            print("takephoto")
+//            DispatchQueue.main.async {
+//                let settings = self.getSettings(camera: self.device, flashMode: self.flashMode)
+//                self.output.capturePhoto(with: settings, delegate: self)
                 Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) {
                     timer in self.session.stopRunning()
                 }
-                withAnimation{self.isTaken.toggle()}
-            }
+                //withAnimation{self.isTaken.toggle()}
+//            }
         }
     }
     
     
-    //retake ph
+    //retake ph once the pic is saved
     func retakePhoto(){
-        
-        DispatchQueue.global(qos: .background).async{
-            //self.session.startRunning()
+
             
-            DispatchQueue.main.async{
-                Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) {
-                timer in self.session.startRunning()
-            }
-                withAnimation{self.isTaken.toggle()}
-                self.isSaved = false
+        DispatchQueue.global(qos: .background).async{
+                //self.session.startRunning()
+                
+//                DispatchQueue.main.async{
+                    Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) {
+                    timer in self.session.startRunning()
+                }
+//                    withAnimation{self.isTaken.toggle()}
+//                    self.isSaved = false
+//                }
             }
         }
-    }
  
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        print(photo)
         if error != nil {
             return
         }
         print("photoOutput succeded")
         
         guard let imageData = photo.fileDataRepresentation() else{return}
+        print(imageData)
         self.picData = imageData
+        print(imageData)
+        let image = UIImage(data: self.picData)!
+        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+        self.isSaved = true
+        print("savePhoto succeded")
     }
     
-    func savePhoto(){
-        Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
-            timer in
-            let image = UIImage(data: self.picData)!
-            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-            self.isSaved = true
-            print("savePhoto succeded")
-            
-        }
-    }
+//    //save photo
+//    func savePhoto(){
+////        DispatchQueue.global(qos: .background).async{
+//      Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
+//        timer in
+//            let image = UIImage(data: self.picData)!
+//            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+//            self.isSaved = true
+//            print("savePhoto succeded")
+//
+////        }
+//        }
+//    }
+    
+    
 }
+
+
 
