@@ -14,7 +14,7 @@ import AVFoundation
 class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     
-    //@Published var isTaken = false
+    @Published var isTaken = false
     
     //initialize a capture session
     @Published var session = AVCaptureSession()
@@ -199,6 +199,7 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
 //                self.output.capturePhoto(with: settings, delegate: self)
                 Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) {
                     timer in self.session.stopRunning()
+                    self.isTaken.toggle()
                 }
                 //withAnimation{self.isTaken.toggle()}
 //            }
@@ -215,7 +216,9 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
                 
 //                DispatchQueue.main.async{
                     Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) {
-                    timer in self.session.startRunning()
+                    timer in
+                        self.isTaken.toggle()
+                        self.session.startRunning()
                 }
 //                    withAnimation{self.isTaken.toggle()}
 //                    self.isSaved = false

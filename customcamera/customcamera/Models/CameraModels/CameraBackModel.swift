@@ -31,7 +31,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     @Published var device: AVCaptureDevice!
     
-    @Published var isBackCameraOn = true
+//    @Published var isBackCameraOn = true
 //    @Published var currentFlashMode = "off"
     
     @Published var isCompressed = false
@@ -59,6 +59,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     // focusmode
     @Published var focusMode:AVCaptureDevice.FocusMode = .continuousAutoFocus
+
     
     
     //check the permissions
@@ -246,6 +247,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
 //            DispatchQueue.main.async {
                 Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) {
                     timer in self.session.stopRunning()
+                    self.isTaken.toggle()
                 }
                 //withAnimation{self.isTaken.toggle()}
 //            }
@@ -262,7 +264,11 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
             
 //                DispatchQueue.main.async{
                     Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) {
-                    timer in self.session.startRunning()
+                    timer in
+                        self.isTaken.toggle()
+//                        let thumbnail = Thumbnail()
+//                        var showingthumbnail = thumbnail.allPhotos.first
+                        self.session.startRunning()
                         
                 }
 //                    withAnimation{self.isTaken.toggle()}
@@ -280,7 +286,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
         print("photoOutput succeded")
         
         guard let imageData = photo.fileDataRepresentation() else{return}
-        print(imageData)
+        
         self.picData = imageData
         print(imageData)
         let image = UIImage(data: self.picData)!

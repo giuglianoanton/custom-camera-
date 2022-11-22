@@ -8,7 +8,7 @@
 import SwiftUI
 import AVFoundation
 import Photos
- 
+
 
 struct CameraView: View {
     @StateObject var cameraBack = CameraBackModel()
@@ -16,15 +16,18 @@ struct CameraView: View {
     @State var isSwitched = false
     @State var isFlashOn = false
     @State var flash = "bolt.slash.fill"
-    @State var picData: CurrentPicData = .void
-    enum CurrentPicData {
+   
+    enum typeCamera {
         case void
         case back
         case front
-        
     }
-    @State var allPhotos = Thumbnail()
-
+    @State var lastToShoot: typeCamera = .void
+    @State var lastPhoto: UIImage = UIImage()
+    @State var temp1 = UIImage()
+    @State var temp2 = UIImage()
+    @State var tempHasChanged = false
+    
     
     var body: some View {
         
@@ -34,6 +37,7 @@ struct CameraView: View {
                     .ignoresSafeArea(.all, edges: .all)
                     .onAppear(perform: {
                         cameraFront.checkPermissions()
+                        checkLastCameraShoot()
                     })
                 
             } else{
@@ -42,6 +46,7 @@ struct CameraView: View {
                     .ignoresSafeArea(.all, edges: .all)
                     .onAppear(perform: {
                         cameraBack.checkPermissions()
+                        checkLastCameraShoot()
                     })
             }
             VStack{
@@ -56,7 +61,6 @@ struct CameraView: View {
                                 
                             }else{
                                 cameraBack.flashMode = .off
-                                
                             }
                             
                             
@@ -135,55 +139,63 @@ struct CameraView: View {
                     Button(action: {
                         
                     }, label: {
-                        if picData == .void{
+                        if lastToShoot == .void{
                             Image(systemName: "photo")
                                 .font(.system(size: 30))
                                 .foregroundColor(.white)
                                 .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
-                        
-                        }
-                        if cameraBack.isSaved || cameraFront.isSaved{
-                                Image(uiImage: allPhotos.allPhotos.reversed()[0])
-                                    .resizable()
-                                    .frame(width: 60, height: 60)
-                                    .scaledToFill()
-                                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
-                            }
-//                            else if cameraFront.isSaved {
-//                                Image(uiImage: UIImage(data: createThumbnailData() as! Data)!)
-//                                    .resizable()
-//                                    .frame(width: 60, height: 60)
-//                                    .scaledToFill()
-//                                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
-//
-//                            }
                             
+                        }
+                        else {
+                            if tempHasChanged{
+                                ThumbnailView(photo: temp1)
+                            }else{
+                                ThumbnailView(photo: temp1)
+                            }
+//                            ThumbnailView(photo: $lastPhoto)
+//                                .onAppear{
+//                                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2, execute: {
+//                                        if isSwitched{
+//                                            lastPhoto = UIImage(data: cameraFront.picData) ?? UIImage()
+//                                        }
+//                                        else{
+//                                            lastPhoto = UIImage(data: cameraBack.picData) ?? UIImage()
+//                                        }
+//                                    })
+
+//                                }
+                        }
                         
-//
+                        
                     })
                     
                     Spacer()
                     Button(action: {
                         if isSwitched{
+//                            isTaken.toggle()
                             cameraFront.takePhoto()
                             
-                            //cameraFront.savePhoto()
                             cameraFront.retakePhoto()
-                            picData = .front
+                            lastToShoot = .front
                             
                             
+                            
+                            //                            print("temp 0 \(temp) ")
                             
                         }else{
+                            checkTempHasChanged()
                             cameraBack.takePhoto()
-                            //cameraBack.savePhoto()
-                        
+                            checkLastCameraShoot()
                             cameraBack.retakePhoto()
-                            picData = .back
+                            lastToShoot = .back
                             
+                            temp2 = UIImage()
+                            
+                            //                            print("temp 0 \(temp) ")
                         }
                         
                     }, label: {
-                                   
+                        
                         ZStack {
                             Circle()
                                 .fill(Color.white)
@@ -218,28 +230,39 @@ struct CameraView: View {
                     .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
                     .background(Color.black)
             }
-        
+            
         }
         
     }
-    func createBackThumbnailData() -> Data{
-        var data: Data
-        
-            data = cameraBack.picData
-            
-            return data
+    
+    func checkLastCameraShoot(){
+        if lastToShoot == .void{
+            return
         }
+        else if lastToShoot == .front{
+            lastPhoto = UIImage(data: cameraFront.picData)!
+            temp1 = lastPhoto
+            temp2 = temp1
+            return
+        }
+        else if lastToShoot == .back{
+            lastPhoto = UIImage(data: cameraBack.picData)!
+            temp1 = lastPhoto
+            temp2 = temp1
+            return
+        }
+        return
+    }
     
+    func checkTempHasChanged() {
+        if temp1 != temp2{
+            tempHasChanged = true
+        }
+        else{
+            tempHasChanged = false
+        }
+    }
     
-//        else if cameraFront.isSaved && picData == .front {
-//            data = cameraFront.picData
-//            cameraFront.isSaved.toggle()
-//            return data
-//        }
-//        else{
-//            return false
-//        }
-   
     
 }
 
