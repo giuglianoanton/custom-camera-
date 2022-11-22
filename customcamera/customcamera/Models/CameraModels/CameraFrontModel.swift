@@ -43,7 +43,7 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
     //data of taken photo
     @Published var picData = Data(count: 0)
     
-    
+    @Published var isCompressed = false
 
     //check the permissions
     func checkPermissions(){
@@ -122,7 +122,7 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
             //start the configuration
             
             self.session.beginConfiguration()
-            
+            session.sessionPreset = AVCaptureSession.Preset.photo
             // store the capture device
             //devicetype for iphone13 .builtInUltraWideCamera
             //let device = AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .unspecified)
@@ -158,8 +158,7 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
     }
     
     // get settings for the photo, settings have to be init at each shooting
-    func getSettings(camera: AVCaptureDevice) -> AVCapturePhotoSettings {
-        let settings = AVCapturePhotoSettings()
+    func getSettings(camera: AVCaptureDevice,  isCompressed: Bool) -> AVCapturePhotoSettings {
 //        let presetSession = AVCaptureSession.Preset(rawValue: AVAssetExportPreset3840x2160)
 //        let rawFormat = output.availableRawPhotoPixelFormatTypes.first
 //        settings = AVCapturePhotoSettings(rawPixelFormatType: OSType(rawFormat!))
@@ -167,11 +166,16 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
 //        let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
 //        settings.rawPhotoPixelFormatType
 //        let settings = AVCapturePhotoSettings(rawPixelFormatType: OSType(self.photoOutput!.availableRawPhotoPixelFormatTypes[0]), processedFormat: nil)
-        
+        var settings = AVCapturePhotoSettings()
         //saving uncompressed
-//        let bgraFormat: [String: AnyObject] = [kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_32BGRA)]
-        //print(self.output.availablePhotoPixelFormatTypes)
-//        let settings = AVCapturePhotoSettings(format: bgraFormat)
+        print(self.isCompressed)
+        if isCompressed{
+            settings = AVCapturePhotoSettings()
+        }else{
+            let bgraFormat: [String: AnyObject] = [kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_32BGRA)]
+            print(self.output.availablePhotoPixelFormatTypes)
+            settings = AVCapturePhotoSettings(format: bgraFormat)
+        }
         
         return settings
     }
@@ -183,7 +187,7 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
             
 //            var photoQualityPrioritization: AVCapturePhotoOutput.QualityPrioritization = .quality
             
-            let settings = self.getSettings(camera: self.device)
+            let settings = self.getSettings(camera: self.device, isCompressed: self.isCompressed)
 //            settings.photoQualityPrioritization = photoQualityPrioritization
             settings.isHighResolutionPhotoEnabled = true
             self.output.capturePhoto(with: settings, delegate: self)

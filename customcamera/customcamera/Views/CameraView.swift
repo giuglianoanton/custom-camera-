@@ -7,6 +7,8 @@
 
 import SwiftUI
 import AVFoundation
+import Photos
+ 
 
 struct CameraView: View {
     @StateObject var cameraBack = CameraBackModel()
@@ -14,6 +16,16 @@ struct CameraView: View {
     @State var isSwitched = false
     @State var isFlashOn = false
     @State var flash = "bolt.slash.fill"
+    @State var picData: CurrentPicData = .void
+    enum CurrentPicData {
+        case void
+        case back
+        case front
+        
+    }
+    @State var allPhotos = Thumbnail()
+
+    
     var body: some View {
         
         ZStack{
@@ -34,6 +46,7 @@ struct CameraView: View {
             }
             VStack{
                 HStack{
+                    
                     if !isSwitched{
                         Button(action: {
                             
@@ -84,7 +97,31 @@ struct CameraView: View {
                                         .foregroundColor(.white)
                                 }else{
                                     Image(systemName: "rectangle.expand.vertical")
-                                        
+                                    
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.white)
+                                }
+                            }
+                        })
+                    }else{
+                        Button(action: {
+                            
+                            cameraFront.isCompressed.toggle()
+                            
+                            
+                        }, label: {
+                            ZStack{
+                                
+                                Circle()
+                                    .stroke(Color.white, lineWidth: 0.5)
+                                    .frame(width: 25, height: 25)
+                                if cameraFront.isCompressed{
+                                    Image(systemName: "rectangle.compress.vertical")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.white)
+                                }else{
+                                    Image(systemName: "rectangle.expand.vertical")
+                                    
                                         .font(.system(size: 16))
                                         .foregroundColor(.white)
                                 }
@@ -93,69 +130,116 @@ struct CameraView: View {
                     }
                 }
                 Spacer()
-            HStack{
-                
-                Button(action: {
+                HStack{
                     
-                }, label: {
-                    Image(systemName: "square.fill")
-                        .font(.system(size: 42))
-                        .foregroundColor(.white)
-                        .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
-                })
-                
-                Spacer()
-                Button(action: {
-                    if isSwitched{
-                        cameraFront.takePhoto()
-                        //cameraFront.savePhoto()
-                        cameraFront.retakePhoto()
-                    }else{
-                        cameraBack.takePhoto()
-//                        cameraBack.savePhoto()
-                        cameraBack.retakePhoto()
-                    }
-
-                }, label: {
-                    ZStack {
-                        Circle()
-                            .fill(Color.white)
-                            .frame(width: 60, height: 60)
+                    Button(action: {
                         
-                        Circle()
-                            .stroke(Color.white, lineWidth: 4)
-                            .frame(width: 70, height: 70)
-                    }.padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 0))
-                })
-                Spacer()
-                Button(action: {
-                    isSwitched.toggle()
-                }, label: {
-                    ZStack{
-                        Image(systemName: "circle.fill")
-                            .font(.system(size: 50))
-                            .foregroundColor(.gray)
-                            .opacity(0.2)
-                            .padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 10))
+                    }, label: {
+                        if picData == .void{
+                            Image(systemName: "photo")
+                                .font(.system(size: 30))
+                                .foregroundColor(.white)
+                                .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
                         
-                        Image(systemName: "arrow.triangle.2.circlepath")
-                            .font(.system(size: 25))
-                            .foregroundColor(.white)
-                            .padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 10))
-                    }
-                })
-                
-            }.frame(height: 120)
+                        }
+                        if cameraBack.isSaved || cameraFront.isSaved{
+                                Image(uiImage: allPhotos.allPhotos.reversed()[0])
+                                    .resizable()
+                                    .frame(width: 60, height: 60)
+                                    .scaledToFill()
+                                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
+                            }
+//                            else if cameraFront.isSaved {
+//                                Image(uiImage: UIImage(data: createThumbnailData() as! Data)!)
+//                                    .resizable()
+//                                    .frame(width: 60, height: 60)
+//                                    .scaledToFill()
+//                                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
+//
+//                            }
+                            
+                        
+//
+                    })
+                    
+                    Spacer()
+                    Button(action: {
+                        if isSwitched{
+                            cameraFront.takePhoto()
+                            
+                            //cameraFront.savePhoto()
+                            cameraFront.retakePhoto()
+                            picData = .front
+                            
+                            
+                            
+                        }else{
+                            cameraBack.takePhoto()
+                            //cameraBack.savePhoto()
+                        
+                            cameraBack.retakePhoto()
+                            picData = .back
+                            
+                        }
+                        
+                    }, label: {
+                                   
+                        ZStack {
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 60, height: 60)
+                            
+                            Circle()
+                                .stroke(Color.white, lineWidth: 4)
+                                .frame(width: 70, height: 70)
+                        }.padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 0))
+                        
+                    })
+                    
+                    Spacer()
+                    Button(action: {
+                        isSwitched.toggle()
+                    }, label: {
+                        ZStack{
+                            Image(systemName: "circle.fill")
+                                .font(.system(size: 50))
+                                .foregroundColor(.gray)
+                                .opacity(0.2)
+                                .padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 10))
+                            
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                                .font(.system(size: 25))
+                                .foregroundColor(.white)
+                                .padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 10))
+                        }
+                    })
+                    
+                }.frame(height: 120)
                     .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
-            .background(Color.black)
-                    
-                
-                
+                    .background(Color.black)
             }
-            
-            
+        
         }
         
     }
+    func createBackThumbnailData() -> Data{
+        var data: Data
+        
+            data = cameraBack.picData
+            
+            return data
+        }
+    
+    
+//        else if cameraFront.isSaved && picData == .front {
+//            data = cameraFront.picData
+//            cameraFront.isSaved.toggle()
+//            return data
+//        }
+//        else{
+//            return false
+//        }
+   
+    
 }
 

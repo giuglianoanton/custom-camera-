@@ -13,7 +13,7 @@ import AVFoundation
 class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     
-    //@Published var isTaken = false
+    @Published var isTaken = false
     
     //initialize a capture session
     @Published var session = AVCaptureSession()
@@ -259,10 +259,11 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
             
         DispatchQueue.global(qos: .background).async{
                 //self.session.startRunning()
-                
+            
 //                DispatchQueue.main.async{
                     Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) {
                     timer in self.session.startRunning()
+                        
                 }
 //                    withAnimation{self.isTaken.toggle()}
 //                    self.isSaved = false
