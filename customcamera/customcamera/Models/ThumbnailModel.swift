@@ -57,7 +57,9 @@ class Thumbnail: ObservableObject {
         //        self.count = results.count
         if results.count > 0 {
             for i in 0..<results.count {
+                
                 let asset = results.object(at: i)
+                
                 self.allPhotos.append(getAssetThumbnail(asset: asset))
             }
         } else {

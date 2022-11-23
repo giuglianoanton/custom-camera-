@@ -10,7 +10,7 @@ import SwiftUI
 import AVFoundation
 
 
-class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
+class CameraModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     
     @Published var isTaken = false
@@ -47,6 +47,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     
     @Published var flashMode: CurrentFlashMode = .off
+    @Published var photoPreview: CGImage!
     
     
     //type of flash
@@ -237,7 +238,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     //take photo
     func takePhoto(){
 
-        DispatchQueue.global(qos: .userInteractive).async {
+        DispatchQueue.global(qos: .background).async {
             
 //            var photoQualityPrioritization: AVCapturePhotoOutput.QualityPrioritization = .quality
             
@@ -256,6 +257,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
                 }
                 //withAnimation{self.isTaken.toggle()}
 //            }
+            
         }
     }
     
@@ -264,7 +266,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     func retakePhoto() async {
 
             
-        DispatchQueue.global(qos: .userInteractive).async{
+        DispatchQueue.global(qos: .background).async{
                 //self.session.startRunning()
             
 //                DispatchQueue.main.async{
@@ -290,7 +292,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
             return
         }
         print("photoOutput succeded")
-        
+        self.photoPreview = photo.previewCGImageRepresentation()
         guard let imageData = photo.fileDataRepresentation() else{return}
         
         self.picData = imageData
@@ -328,6 +330,33 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
           }
 //        }
         }
+    }
+    
+    //switch camera
+    func switchCamera(){
+        guard let input = session.inputs[0] as? AVCaptureDeviceInput else { return }
+        // Begin new session configuration and defer commit
+        session.beginConfiguration()
+        defer { session.commitConfiguration() }
+        // Create new capture device
+        var newDevice: AVCaptureDevice?
+        if input.device.position == .back {
+            newDevice = availableCaptureDevices[1]
+        } else {
+            newDevice = availableCaptureDevices[0]
+        }
+        // Create new capture input
+        var deviceInput: AVCaptureDeviceInput!
+        do {
+            deviceInput = try AVCaptureDeviceInput(device: newDevice!)
+        } catch let error {
+            print(error.localizedDescription)
+            return
+        }
+        // Swap capture device inputs
+            session.removeInput(input)
+            session.addInput(deviceInput)
+        
     }
     
     

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ThumbnailView: View {
     
-    var photo: [UIImage]
+@Binding var photo: [UIImage]
     
     var body: some View {
         Image(uiImage: photo.first!)

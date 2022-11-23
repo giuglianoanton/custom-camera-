@@ -9,11 +9,13 @@ import SwiftUI
 
 struct PhotoView: View {
 
-    @Binding var photo: [UIImage]
+//    @Binding var photo: [UIImage]
+    @Binding var photo: CGImage
     
     var body: some View {
         
-        Image(uiImage: photo.first!)
+//        Image(uiImage: photo.first!)
+        Image(uiImage: UIImage(cgImage: photo))
                 .resizable()
                 .frame(width: 500, height: 500)
                 .scaledToFill()

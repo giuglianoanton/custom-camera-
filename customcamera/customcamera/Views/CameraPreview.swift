@@ -8,18 +8,20 @@
 import SwiftUI
 import AVFoundation
 
-struct CameraBackPreview: UIViewRepresentable {
+struct CameraPreview: UIViewRepresentable {
     
-    @ObservedObject var cameraBack: CameraBackModel
+    @ObservedObject var camera: CameraModel
+
     
     func makeUIView(context: Context) -> UIView {
         
         let view = UIView(frame: UIScreen.main.bounds)
-        cameraBack.preview = AVCaptureVideoPreviewLayer(session: cameraBack.session)
-        cameraBack.preview.frame = view.frame
         
-        cameraBack.preview.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(cameraBack.preview)
+        camera.preview = AVCaptureVideoPreviewLayer(session: camera.session)
+        camera.preview.frame = view.frame
+        
+        camera.preview.videoGravity = .resizeAspectFill
+        view.layer.addSublayer(camera.preview)
         
 //        cameraBack.session.startRunning()
         
@@ -28,7 +30,7 @@ struct CameraBackPreview: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
         
     }
-    func makeCoordinator() -> CameraBackPreview.Coordinator {
+    func makeCoordinator() -> CameraPreview.Coordinator {
         return Coordinator()
     }
 }

@@ -44,6 +44,8 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
     @Published var picData = Data(count: 0)
     
     @Published var isCompressed = false
+    
+    @Published var photoPreview: CGImage!
 
     //check the permissions
     func checkPermissions(){
@@ -233,7 +235,7 @@ class CameraFrontModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate
             return
         }
         print("photoOutput succeded")
-        
+        self.photoPreview = photo.previewCGImageRepresentation()
         guard let imageData = photo.fileDataRepresentation() else{return}
         print(imageData)
         self.picData = imageData

@@ -11,30 +11,30 @@ import Photos
 
 
 struct CameraView: View {
-    @StateObject var cameraBack = CameraBackModel()
-    @StateObject var cameraFront = CameraFrontModel()
+    @StateObject var camera = CameraModel()
     @State var isSwitched = false
     @State var isFlashOn = false
     @State var flash = "bolt.slash.fill"
    
-    enum typeCamera {
-        case void
-        case back
-        case front
-    }
-    @State var lastToShoot: typeCamera = .void
-    @State var lastPhoto: UIImage = UIImage()
-    @State var temp1 = 1
-    @State var temp2 = 2
-    @State var tempHasChanged = false
-    
-
-    @State var thumbnail: [UIImage] = [UIImage]()
-    
-    
-    
-    @State var allPhotos : PHFetchResult<PHAsset>? = nil
-    @State var fetchedPhotos = [UIImage]()
+    //with the fetching stuff
+//    enum typeCamera {
+//        case void
+//        case back
+//        case front
+//    }
+//    @State var lastToShoot: typeCamera = .void
+//    @State var lastPhoto: UIImage = UIImage()
+//    @State var temp1 = 1
+//    @State var temp2 = 2
+//    @State var tempHasChanged = false
+//
+//
+//    @State var thumbnail: [UIImage] = [UIImage]()
+//
+//
+//
+//    @State var allPhotos : PHFetchResult<PHAsset>? = nil
+//    @State var fetchedPhotos = [UIImage]()
     
     
     var body: some View {
@@ -42,22 +42,23 @@ struct CameraView: View {
         ZStack{
             if isSwitched{
                 
-                CameraFrontPreview(cameraFront: cameraFront)
-                    .ignoresSafeArea(.all, edges: .all)
-                    .onAppear(perform: {
-                        cameraFront.checkPermissions()
-                        updateLastPhoto()
-                    })
+                ZStack{
+                    CameraPreview(camera: camera)
+                        .ignoresSafeArea(.all, edges: .all)
+                    Text("is")
+                }
                 
             } else{
-                
-                CameraBackPreview(cameraBack: cameraBack)
+                ZStack{
+                CameraPreview(camera: camera)
                     .ignoresSafeArea(.all, edges: .all)
                     .onAppear(perform: {
-                        cameraBack.checkPermissions()
-                        updateLastPhoto()
+                        camera.checkPermissions()
+//                        updateLastPhoto()
                         
                     })
+                    Text("isnot")
+            }
             }
             VStack{
                 HStack{
@@ -67,10 +68,10 @@ struct CameraView: View {
                             
                             self.isFlashOn.toggle()
                             if isFlashOn{
-                                cameraBack.flashMode = .on
+                                camera.flashMode = .on
                                 
                             }else{
-                                cameraBack.flashMode = .off
+                                camera.flashMode = .off
                             }
                             
                             
@@ -96,7 +97,7 @@ struct CameraView: View {
                         
                         Button(action: {
                             
-                            cameraBack.isCompressed.toggle()
+                            camera.isCompressed.toggle()
                             
                             
                         }, label: {
@@ -105,7 +106,7 @@ struct CameraView: View {
                                 Circle()
                                     .stroke(Color.white, lineWidth: 0.5)
                                     .frame(width: 25, height: 25)
-                                if cameraBack.isCompressed{
+                                if camera.isCompressed{
                                     Image(systemName: "rectangle.compress.vertical")
                                         .font(.system(size: 16))
                                         .foregroundColor(.white)
@@ -120,7 +121,7 @@ struct CameraView: View {
                     }else{
                         Button(action: {
                             
-                            cameraFront.isCompressed.toggle()
+                            camera.isCompressed.toggle()
                             
                             
                         }, label: {
@@ -129,7 +130,7 @@ struct CameraView: View {
                                 Circle()
                                     .stroke(Color.white, lineWidth: 0.5)
                                     .frame(width: 25, height: 25)
-                                if cameraFront.isCompressed{
+                                if camera.isCompressed{
                                     Image(systemName: "rectangle.compress.vertical")
                                         .font(.system(size: 16))
                                         .foregroundColor(.white)
@@ -145,81 +146,37 @@ struct CameraView: View {
                 }
                 Spacer()
                 HStack{
-                    
-//                    Button(action: {
-                       
-                    NavigationLink(destination: PhotoView(photo: $fetchedPhotos), label: {
-                                                        
-                            
+                    if !camera.isSaved{
+                        Image(systemName: "photo")
+                            .font(.system(size: 30))
+                            .foregroundColor(.white)
+                            .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
+                    }else{
+                        NavigationLink(destination: PhotoView(photo: $camera.photoPreview), label: {
+                                Image(uiImage: UIImage(cgImage: camera.photoPreview!))
+                                    .resizable()
+                                    .rotationEffect(Angle(degrees: 90))
+                                    .frame(width: 70, height: 70)
+                                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
 
-                        
-//                    }, label: {
-                        if lastToShoot == .void{
-                            Image(systemName: "photo")
-                                .font(.system(size: 30))
-                                .foregroundColor(.white)
-                                .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
-                            
-                        }
-                        else {
-                            if tempHasChanged{
-                                
-                                ThumbnailView(photo: fetchedPhotos)
-                                    
-                            }
-                            else{
-                               
-                                ThumbnailView(photo: fetchedPhotos)
-
-                            }
-//                            ThumbnailView(photo: $lastPhoto)
-//                                .onAppear{
-//                                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2, execute: {
-//                                        if isSwitched{
-//                                            lastPhoto = UIImage(data: cameraFront.picData) ?? UIImage()
-//                                        }
-//                                        else{
-//                                            lastPhoto = UIImage(data: cameraBack.picData) ?? UIImage()
-//                                        }
-//                                    })
-
-//                                }
-                        }
-                        
-                        
-                    })
+                        })
+                    }
                     
                     Spacer()
                     Button(action: {
-                        if isSwitched{
-//                            isTaken.toggle()
-                            cameraFront.takePhoto()
-                            
-                            cameraFront.retakePhoto()
-                            lastToShoot = .front
-                            
-                            
-                            
-                            //                            print("temp 0 \(temp) ")
-                            
-                        }else{
-                            checkTempHasChanged()
-                            cameraBack.shoot()
-//                            cameraBack.takePhoto()
-                            updateLastPhoto()
-//                            thumbnail = getThumbnail()
-                           
-                            
-//                            cameraBack.retakePhoto()
-                            lastToShoot = .back
-                            
-                            temp2 = 2
+//                        i
 //                            checkTempHasChanged()
-                            tempHasChanged.toggle()
-                            tempHasChanged.toggle()
+//                            lastToShoot = .back
+                            camera.shoot()
                             
-                           
-                        }
+                        //with the fetching stuff
+//                            temp2 = 2
+//                            checkTempHasChanged()
+//                            tempHasChanged.toggle()
+//                            tempHasChanged.toggle()
+                            
+//                            cameraBack.isSaved.toggle()
+//                        }
                         
                     }, label: {
                         
@@ -238,6 +195,7 @@ struct CameraView: View {
                     Spacer()
                     Button(action: {
                         isSwitched.toggle()
+                        camera.switchCamera()
                     }, label: {
                         ZStack{
                             Image(systemName: "circle.fill")
@@ -263,46 +221,55 @@ struct CameraView: View {
         }
         
     }
-        
     
     
-    func updateLastPhoto() {
-        var startFetchedPhotos = Thumbnail()
-        startFetchedPhotos.getAllPhotos()
-        fetchedPhotos = startFetchedPhotos.allPhotos
-        
-        Task{
-            if cameraBack.isSaved{
-                await cameraBack.retakePhoto()
-            }
-        }
-        if lastToShoot == .void{
-            return
-        }
-        else{
-            if fetchedPhotos.count > 0{
-                lastPhoto = (fetchedPhotos.first)!
-                temp1 = 1
-                temp2 = temp1
-            }
-            else{
-                return
-            }
-        }
-        
-        return
-    }
     
-    func checkTempHasChanged() {
-        if temp1 != temp2{
-            tempHasChanged = true
-            print(true)
-        }
-        else{
-            tempHasChanged = false
-            print(false)
-        }
-    }
+    //with the fetching stuff
+//    func updateThumbnail(){
+//        if lastToShoot == .void{
+//
+//        }
+//    }
+    
+    //with the fetching stuff
+//    func updateLastPhoto() {
+//        var startFetchedPhotos = Thumbnail()
+//        startFetchedPhotos.getAllPhotos()
+//        fetchedPhotos = startFetchedPhotos.allPhotos
+//        print(fetchedPhotos.count)
+//        Task{
+//            if camera.isSaved{
+//                await camera.retakePhoto()
+//            }
+//        }
+//        if lastToShoot == .void{
+//            return
+//        }
+//        else{
+//            if fetchedPhotos.count > 0{
+//                lastPhoto = (fetchedPhotos.first)!
+//                temp1 = 1
+//                temp2 = temp1
+//            }
+//            else{
+//                return
+//            }
+//        }
+//
+//        return
+//    }
+    
+    //with the fetching stuff
+//    func checkTempHasChanged() {
+//        if temp1 != temp2{
+//            tempHasChanged = true
+//            print(true)
+//        }
+//        else{
+//            tempHasChanged = false
+//            print(false)
+//        }
+//    }
  
     
 }
