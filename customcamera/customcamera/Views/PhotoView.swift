@@ -16,16 +16,12 @@ struct PhotoView: View {
         
 //        Image(uiImage: photo.first!)
         Image(uiImage: UIImage(cgImage: photo))
-                .resizable()
+            .resizable()
+            .rotationEffect(Angle(degrees: 90))
                 .frame(width: 500, height: 500)
-                .scaledToFill()
+                .scaledToFit()
                 .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
     
     }
     
 }
-//struct PhotoView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        PhotoView()
-//    }
-//}

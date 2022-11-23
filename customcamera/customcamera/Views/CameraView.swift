@@ -60,109 +60,139 @@ struct CameraView: View {
                     Text("isnot")
             }
             }
+            //up and bottom buttons
             VStack{
-                HStack{
-                    
-                    if !isSwitched{
-                        Button(action: {
-                            
-                            self.isFlashOn.toggle()
-                            if isFlashOn{
-                                camera.flashMode = .on
+                //up buttons
+                
+                ZStack {
+                    HStack{
+                        
+                        if !isSwitched{
+                            //flasButton
+                            Button(action: {
                                 
-                            }else{
-                                camera.flashMode = .off
-                            }
+                                self.isFlashOn.toggle()
+                                if isFlashOn{
+                                    camera.flashMode = .on
+                                    
+                                }else{
+                                    camera.flashMode = .off
+                                }
+                                
+                                
+                            }, label: {
+                                ZStack{
+                                    
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: 0.5)
+                                        .frame(width: 25, height: 25)
+                                    
+                                    Image(systemName: "bolt.fill")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.white)
+                                    
+                                    if !isFlashOn{
+                                        Image(systemName: "line.diagonal")
+                                            .rotationEffect(Angle(degrees: 90))
+                                            .font(.system(size: 20))
+                                            .foregroundColor(.white)
+                                    }
+                                }
+                            })
+                        }
+                        //Compressed file button
+                            Button(action: {
+                                
+                                camera.isCompressed.toggle()
+                                
+                                
+                            }, label: {
+                                ZStack{
+                                    
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: 0.5)
+                                        .frame(width: 25, height: 25)
+                                    if camera.isCompressed{
+                                        Image(systemName: "rectangle.compress.vertical")
+                                            .font(.system(size: 16))
+                                            .foregroundColor(.white)
+                                    }else{
+                                        Image(systemName: "rectangle.expand.vertical")
+                                        
+                                            .font(.system(size: 16))
+                                            .foregroundColor(.white)
+                                    }
+                                }
+                            })
+                        
+                        Spacer()
+                      
+                        //live pic not active for now
+                        Button(action: {},label: {
+                                Image(systemName: "livephoto")
+                                    .font(.system(size: 20))
+                                    .foregroundColor(.gray)
+                        })
+                    }
+
+                    Button(action: {},label: {
+                        ZStack{
+                            Circle()
+                                .foregroundColor(Color.gray)
+                                .opacity(0.2)
+                                .frame(width: 25, height: 25)
                             
-                            
+                            Image(systemName: "chevron.up")
+                                .font(.system(size: 16))
+                                .foregroundColor(.gray)
+                        }
+                    })
+                }.frame(height: 90)
+                    .padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
+                .background(Color.black)
+                
+                Spacer()
+                //bottom buttons
+                ZStack {
+                    HStack{
+                        //thumbnails
+                        if !camera.isSaved{
+                            Image(systemName: "photo")
+                                .font(.system(size: 39))
+                                .foregroundColor(.white)
+                                .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
+                        }else{
+                            NavigationLink(destination: PhotoView(photo: $camera.photoPreview), label: {
+                                    Image(uiImage: UIImage(cgImage: camera.photoPreview!))
+                                        .resizable()
+                                        .scaledToFit()
+                                        .rotationEffect(Angle(degrees: 90))
+                                        .frame(width: 55, height: 55)
+                                        .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
+
+                            })
+                        }
+                        
+                        Spacer()
+                        Button(action: {
+                            isSwitched.toggle()
+                            camera.switchCamera()
                         }, label: {
                             ZStack{
+                                Image(systemName: "circle.fill")
+                                    .font(.system(size: 50))
+                                    .foregroundColor(.gray)
+                                    .opacity(0.2)
+                                    .padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 10))
                                 
-                                Circle()
-                                    .stroke(Color.white, lineWidth: 0.5)
-                                    .frame(width: 25, height: 25)
-                                
-                                Image(systemName: "bolt.fill")
-                                    .font(.system(size: 16))
+                                Image(systemName: "arrow.triangle.2.circlepath")
+                                    .font(.system(size: 25))
                                     .foregroundColor(.white)
-                                
-                                if !isFlashOn{
-                                    Image(systemName: "line.diagonal")
-                                        .rotationEffect(Angle(degrees: 90))
-                                        .font(.system(size: 20))
-                                        .foregroundColor(.white)
-                                }
+                                    .padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 10))
                             }
                         })
                         
-                        Button(action: {
-                            
-                            camera.isCompressed.toggle()
-                            
-                            
-                        }, label: {
-                            ZStack{
-                                
-                                Circle()
-                                    .stroke(Color.white, lineWidth: 0.5)
-                                    .frame(width: 25, height: 25)
-                                if camera.isCompressed{
-                                    Image(systemName: "rectangle.compress.vertical")
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.white)
-                                }else{
-                                    Image(systemName: "rectangle.expand.vertical")
-                                    
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.white)
-                                }
-                            }
-                        })
-                    }else{
-                        Button(action: {
-                            
-                            camera.isCompressed.toggle()
-                            
-                            
-                        }, label: {
-                            ZStack{
-                                
-                                Circle()
-                                    .stroke(Color.white, lineWidth: 0.5)
-                                    .frame(width: 25, height: 25)
-                                if camera.isCompressed{
-                                    Image(systemName: "rectangle.compress.vertical")
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.white)
-                                }else{
-                                    Image(systemName: "rectangle.expand.vertical")
-                                    
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.white)
-                                }
-                            }
-                        })
                     }
-                }
-                Spacer()
-                HStack{
-                    if !camera.isSaved{
-                        Image(systemName: "photo")
-                            .font(.system(size: 30))
-                            .foregroundColor(.white)
-                            .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
-                    }else{
-                        NavigationLink(destination: PhotoView(photo: $camera.photoPreview), label: {
-                                Image(uiImage: UIImage(cgImage: camera.photoPreview!))
-                                    .resizable()
-                                    .rotationEffect(Angle(degrees: 90))
-                                    .frame(width: 70, height: 70)
-                                    .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
-
-                        })
-                    }
-                    
-                    Spacer()
                     Button(action: {
 //                        i
 //                            checkTempHasChanged()
@@ -191,29 +221,10 @@ struct CameraView: View {
                         }.padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 0))
                         
                     })
-                    
-                    Spacer()
-                    Button(action: {
-                        isSwitched.toggle()
-                        camera.switchCamera()
-                    }, label: {
-                        ZStack{
-                            Image(systemName: "circle.fill")
-                                .font(.system(size: 50))
-                                .foregroundColor(.gray)
-                                .opacity(0.2)
-                                .padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 10))
-                            
-                            Image(systemName: "arrow.triangle.2.circlepath")
-                                .font(.system(size: 25))
-                                .foregroundColor(.white)
-                                .padding(EdgeInsets(top: 10, leading: 0, bottom: 50, trailing: 10))
-                        }
-                    })
-                    
+                  
                 }.frame(height: 120)
-                    .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
-                    .background(Color.black)
+                                        .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+                                    .background(Color.black)
             }
             
         }

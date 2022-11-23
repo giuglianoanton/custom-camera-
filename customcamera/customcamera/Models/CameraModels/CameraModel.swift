@@ -251,7 +251,7 @@ class CameraModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
             
             print("takephoto")
 //            DispatchQueue.main.async {
-                Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) {
+                Timer.scheduledTimer(withTimeInterval: 0.05, repeats: false) {
                     timer in self.session.stopRunning()
                     self.isTaken.toggle()
                 }
@@ -270,7 +270,7 @@ class CameraModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
                 //self.session.startRunning()
             
 //                DispatchQueue.main.async{
-                    Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) {
+                    Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
                     timer in
                         self.isTaken.toggle()
 //                        let thumbnail = Thumbnail()
@@ -319,7 +319,7 @@ class CameraModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     func savePhoto(){
 //        DispatchQueue.global(qos: .background).async{
         
-      Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
+      Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) {
         timer in
             let image = UIImage(data: self.picData)!
             UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
