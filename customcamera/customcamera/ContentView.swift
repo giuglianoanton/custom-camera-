@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import Photos
 
 struct ContentView: View {
+    var allPhotos : PHFetchResult<PHAsset>? = nil
+    
     var body: some View {
         CameraView()
+            
     }
 }
+    
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

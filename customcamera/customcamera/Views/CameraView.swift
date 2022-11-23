@@ -24,20 +24,29 @@ struct CameraView: View {
     }
     @State var lastToShoot: typeCamera = .void
     @State var lastPhoto: UIImage = UIImage()
-    @State var temp1 = UIImage()
-    @State var temp2 = UIImage()
+    @State var temp1 = 1
+    @State var temp2 = 2
     @State var tempHasChanged = false
+    
+
+    @State var thumbnail: [UIImage] = [UIImage]()
+    
+    
+    
+    @State var allPhotos : PHFetchResult<PHAsset>? = nil
+    @State var fetchedPhotos = [UIImage]()
     
     
     var body: some View {
-        
+        NavigationView{
         ZStack{
             if isSwitched{
+                
                 CameraFrontPreview(cameraFront: cameraFront)
                     .ignoresSafeArea(.all, edges: .all)
                     .onAppear(perform: {
                         cameraFront.checkPermissions()
-                        checkLastCameraShoot()
+                        updateLastPhoto()
                     })
                 
             } else{
@@ -46,7 +55,8 @@ struct CameraView: View {
                     .ignoresSafeArea(.all, edges: .all)
                     .onAppear(perform: {
                         cameraBack.checkPermissions()
-                        checkLastCameraShoot()
+                        updateLastPhoto()
+                        
                     })
             }
             VStack{
@@ -136,9 +146,14 @@ struct CameraView: View {
                 Spacer()
                 HStack{
                     
-                    Button(action: {
+//                    Button(action: {
+                       
+                    NavigationLink(destination: PhotoView(photo: $fetchedPhotos), label: {
+                                                        
+                            
+
                         
-                    }, label: {
+//                    }, label: {
                         if lastToShoot == .void{
                             Image(systemName: "photo")
                                 .font(.system(size: 30))
@@ -148,9 +163,14 @@ struct CameraView: View {
                         }
                         else {
                             if tempHasChanged{
-                                ThumbnailView(photo: temp1)
-                            }else{
-                                ThumbnailView(photo: temp1)
+                                
+                                ThumbnailView(photo: fetchedPhotos)
+                                    
+                            }
+                            else{
+                               
+                                ThumbnailView(photo: fetchedPhotos)
+
                             }
 //                            ThumbnailView(photo: $lastPhoto)
 //                                .onAppear{
@@ -184,14 +204,21 @@ struct CameraView: View {
                             
                         }else{
                             checkTempHasChanged()
-                            cameraBack.takePhoto()
-                            checkLastCameraShoot()
-                            cameraBack.retakePhoto()
+                            cameraBack.shoot()
+//                            cameraBack.takePhoto()
+                            updateLastPhoto()
+//                            thumbnail = getThumbnail()
+                           
+                            
+//                            cameraBack.retakePhoto()
                             lastToShoot = .back
                             
-                            temp2 = UIImage()
+                            temp2 = 2
+//                            checkTempHasChanged()
+                            tempHasChanged.toggle()
+                            tempHasChanged.toggle()
                             
-                            //                            print("temp 0 \(temp) ")
+                           
                         }
                         
                     }, label: {
@@ -233,36 +260,50 @@ struct CameraView: View {
             
         }
         
+        }
+        
     }
+        
     
-    func checkLastCameraShoot(){
+    
+    func updateLastPhoto() {
+        var startFetchedPhotos = Thumbnail()
+        startFetchedPhotos.getAllPhotos()
+        fetchedPhotos = startFetchedPhotos.allPhotos
+        
+        Task{
+            if cameraBack.isSaved{
+                await cameraBack.retakePhoto()
+            }
+        }
         if lastToShoot == .void{
             return
         }
-        else if lastToShoot == .front{
-            lastPhoto = UIImage(data: cameraFront.picData)!
-            temp1 = lastPhoto
-            temp2 = temp1
-            return
+        else{
+            if fetchedPhotos.count > 0{
+                lastPhoto = (fetchedPhotos.first)!
+                temp1 = 1
+                temp2 = temp1
+            }
+            else{
+                return
+            }
         }
-        else if lastToShoot == .back{
-            lastPhoto = UIImage(data: cameraBack.picData)!
-            temp1 = lastPhoto
-            temp2 = temp1
-            return
-        }
+        
         return
     }
     
     func checkTempHasChanged() {
         if temp1 != temp2{
             tempHasChanged = true
+            print(true)
         }
         else{
             tempHasChanged = false
+            print(false)
         }
     }
-    
+ 
     
 }
 

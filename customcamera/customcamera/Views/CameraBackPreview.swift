@@ -28,6 +28,9 @@ struct CameraBackPreview: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {
         
     }
+    func makeCoordinator() -> CameraBackPreview.Coordinator {
+        return Coordinator()
+    }
 }
 
 

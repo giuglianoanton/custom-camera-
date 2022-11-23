@@ -219,6 +219,10 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
             settings = AVCapturePhotoSettings(format: bgraFormat)
         }
         
+        if let previewPhotoPixelFormatType = settings.availablePreviewPhotoPixelFormatTypes.first {
+            settings.previewPhotoFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPhotoPixelFormatType]
+        }
+        
         if camera.hasFlash {
             switch flashMode {
                case .auto: settings.flashMode = .auto
@@ -233,7 +237,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     //take photo
     func takePhoto(){
 
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInteractive).async {
             
 //            var photoQualityPrioritization: AVCapturePhotoOutput.QualityPrioritization = .quality
             
@@ -243,6 +247,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
             self.output.capturePhoto(with: settings, delegate: self)
 //            self.output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
             //self.session.stopRunning()
+            
             print("takephoto")
 //            DispatchQueue.main.async {
                 Timer.scheduledTimer(withTimeInterval: 0.1, repeats: false) {
@@ -256,10 +261,10 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     
     //retake ph once the pic is saved
-    func retakePhoto(){
+    func retakePhoto() async {
 
             
-        DispatchQueue.global(qos: .background).async{
+        DispatchQueue.global(qos: .userInteractive).async{
                 //self.session.startRunning()
             
 //                DispatchQueue.main.async{
@@ -280,6 +285,7 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         print(photo)
+        
         if error != nil {
             return
         }
@@ -288,26 +294,41 @@ class CameraBackModel:NSObject, ObservableObject, AVCapturePhotoCaptureDelegate{
         guard let imageData = photo.fileDataRepresentation() else{return}
         
         self.picData = imageData
-        print(imageData)
-        let image = UIImage(data: self.picData)!
-        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-        self.isSaved = true
-        print("savePhoto succeded")
+        savePhoto()
+//        print(imageData)
+//        let image = UIImage(data: self.picData)!
+//        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+//        self.isSaved = true
+//        print("savePhoto succeded")
+    
     }
     
-//    //save photo
-//    func savePhoto(){
-////        DispatchQueue.global(qos: .background).async{
-//      Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
-//        timer in
-//            let image = UIImage(data: self.picData)!
-//            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
-//            self.isSaved = true
-//            print("savePhoto succeded")
-//
-////        }
+    
+    func shoot(){
+        Task{
+            setDevice()
+            setSession()
+            takePhoto()
+            
+            await retakePhoto()
+        }
+    }
+    //save photo
+    func savePhoto(){
+//        DispatchQueue.global(qos: .background).async{
+        
+      Timer.scheduledTimer(withTimeInterval: 0.2, repeats: false) {
+        timer in
+            let image = UIImage(data: self.picData)!
+            UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+            self.isSaved = true
+            print("savePhoto succeded")
+          Task{
+              await self.retakePhoto()
+          }
 //        }
-//    }
+        }
+    }
     
     
 }
