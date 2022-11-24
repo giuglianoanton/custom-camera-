@@ -45,6 +45,11 @@ struct CameraView: View {
                 ZStack{
                     CameraPreview(camera: camera)
                         .ignoresSafeArea(.all, edges: .all)
+                        .onAppear(perform: {
+                            camera.checkPermissions()
+    //                        updateLastPhoto()
+                        })
+                        
                     Text("is")
                 }
                 
@@ -56,7 +61,9 @@ struct CameraView: View {
                         camera.checkPermissions()
 //                        updateLastPhoto()
                         
+                            
                     })
+                    
                     Text("isnot")
             }
             }
@@ -162,7 +169,7 @@ struct CameraView: View {
                                 .foregroundColor(.white)
                                 .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
                         }else{
-                            NavigationLink(destination: PhotoView(photo: $camera.photoPreview), label: {
+                            NavigationLink(destination: PhotoView(photo: camera.photoPreview), label: {
                                     Image(uiImage: UIImage(cgImage: camera.photoPreview!))
                                         .resizable()
                                         .scaledToFit()
@@ -286,18 +293,4 @@ struct CameraView: View {
 //    }
  
     
-}
-
-
-struct NavigationConfigurator: UIViewControllerRepresentable {
-    var configure: (UINavigationController) -> Void = { _ in }
-
-    func makeUIViewController(context: UIViewControllerRepresentableContext<NavigationConfigurator>) -> UIViewController {
-        UIViewController()
-    }
-    func updateUIViewController(_ uiViewController: UIViewController, context: UIViewControllerRepresentableContext<NavigationConfigurator>) {
-        if let nc = uiViewController.navigationController {
-            self.configure(nc)
-        }
-    }
 }

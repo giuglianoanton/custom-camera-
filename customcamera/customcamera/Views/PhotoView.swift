@@ -10,9 +10,7 @@ import UIKit
 
 struct PhotoView: View {
     
-    
-    //    @Binding var photo: [UIImage]
-    @Binding var photo: CGImage
+    var photo: CGImage
     
     var body: some View {
         ScrollView{
@@ -24,21 +22,37 @@ struct PhotoView: View {
                 .scaledToFill()
                 .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
         }
-        
+//        .navigationTitle()
         .navigationBarColor(backgroundColor: UIColor(named: "navigationbar"), titleColor: .white)
         
-            .toolbar {
+        //navigationbar buttons
+        .toolbar{
+            //all photos
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    
+
+                }, label: {
+                    Text("All Photos")
+                })
+            }
+            //contextualmenu
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+
                 }, label: {
                     Image(systemName: "ellipsis.circle")
                 })
             }
+            
+        }
+        
+        //bottom toolbar
+            .toolbar(content: {
+            
             //share
             ToolbarItem(placement: .bottomBar) {
                 Button(action: {
-                    
+
                 }, label: {
                     Image(systemName: "square.and.arrow.up")
                 })
@@ -49,7 +63,7 @@ struct PhotoView: View {
             //favorite
             ToolbarItem(placement: .bottomBar) {
                 Button(action: {
-                    
+
                 }, label: {
                     Image(systemName: "heart")
                 })
@@ -60,7 +74,7 @@ struct PhotoView: View {
             //info
             ToolbarItem(placement: .bottomBar) {
                 Button(action: {
-                    
+
                 }, label: {
                     Image(systemName: "info.circle")
                 })
@@ -71,7 +85,7 @@ struct PhotoView: View {
             //edit
             ToolbarItem(placement: .bottomBar) {
                 Button(action: {
-                    
+
                 }, label: {
                     Text("Edit")
                         .font(.system(size: 20))
@@ -83,13 +97,12 @@ struct PhotoView: View {
             //delete
             ToolbarItem(placement: .bottomBar) {
                 Button(action: {
-                    
+
                 }, label: {
                     Image(systemName: "trash")
                 })
             }
-            
-        }
+            })
     }
     
 }
