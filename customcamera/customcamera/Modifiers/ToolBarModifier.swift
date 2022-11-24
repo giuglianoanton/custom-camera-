@@ -18,8 +18,6 @@ struct ToolBarModifier: ViewModifier {
         let coloredAppearance = UIToolbarAppearance()
         coloredAppearance.configureWithTransparentBackground()
         coloredAppearance.backgroundColor = backgroundColor
-//        coloredAppearance.titleTextAttributes = [.foregroundColor: titleColor ?? .white]
-//        coloredAppearance.largeTitleTextAttributes = [.foregroundColor: titleColor ?? .white]
 
         UIToolbar.appearance().standardAppearance = coloredAppearance
         UIToolbar.appearance().compactAppearance = coloredAppearance
@@ -32,7 +30,7 @@ struct ToolBarModifier: ViewModifier {
             VStack {
                 GeometryReader { geometry in
                     Color(self.backgroundColor ?? .clear)
-                        .frame(height: geometry.safeAreaInsets.top)
+                        .frame(height: 0.01)
                         .edgesIgnoringSafeArea(.top)
                     Spacer()
                 }
