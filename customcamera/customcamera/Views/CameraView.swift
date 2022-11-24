@@ -15,6 +15,7 @@ struct CameraView: View {
     @State var isSwitched = false
     @State var isFlashOn = false
     @State var flash = "bolt.slash.fill"
+    @State var showToolBar = false
    
     //with the fetching stuff
 //    enum typeCamera {
@@ -50,7 +51,7 @@ struct CameraView: View {
     //                        updateLastPhoto()
                         })
                         
-                    Text("is")
+//                    Text("is")
                 }
                 
             } else{
@@ -64,7 +65,7 @@ struct CameraView: View {
                             
                     })
                     
-                    Text("isnot")
+//                    Text("isnot")
             }
             }
             //up and bottom buttons
@@ -109,26 +110,28 @@ struct CameraView: View {
                         }
                         //Compressed file button
                             Button(action: {
-                                
-                                camera.isCompressed.toggle()
-                                
-                                
+                               
                             }, label: {
                                 ZStack{
                                     
                                     Circle()
                                         .stroke(Color.white, lineWidth: 0.5)
                                         .frame(width: 25, height: 25)
-                                    if camera.isCompressed{
-                                        Image(systemName: "rectangle.compress.vertical")
-                                            .font(.system(size: 16))
-                                            .foregroundColor(.white)
-                                    }else{
-                                        Image(systemName: "rectangle.expand.vertical")
+                                    
+                                    
+//                                    ForEach(0..<16) { index in
+//                                        if index/2 == 0 {
+////                                            ExposureIconView(index: index)
+//                                            LinePath(startPoint: CGPoint(x: 0 + index , y: 0), endPoint: CGPoint(x: 0 + index, y: 50))
+//                                        }
+//
                                         
-                                            .font(.system(size: 16))
-                                            .foregroundColor(.white)
-                                    }
+//                                    }
+                                   
+                                        Image(systemName: "moon.fill")
+                                        
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.gray)
                                 }
                             })
                         
@@ -140,18 +143,39 @@ struct CameraView: View {
                                     .font(.system(size: 20))
                                     .foregroundColor(.gray)
                         })
+                        //Compressed file button
+                            Button(action: {
+                                
+                                camera.isCompressed.toggle()
+                                
+                                
+                            }, label: {
+                                ZStack{
+                                    
+                                    Circle()
+                                        .stroke(Color.white, lineWidth: 0.5)
+                                        .frame(width: 25, height: 25)
+                                    
+                                        Image(systemName: camera.isCompressed ? "rectangle.compress.vertical" : "rectangle.expand.vertical")
+                                            .font(.system(size: 16))
+                                            .foregroundColor(.white)
+                                }
+                            })
+                        
                     }
 
-                    Button(action: {},label: {
+                    Button(action: {
+                        showToolBar.toggle()
+                    },label: {
                         ZStack{
                             Circle()
                                 .foregroundColor(Color.gray)
                                 .opacity(0.2)
                                 .frame(width: 25, height: 25)
                             
-                            Image(systemName: "chevron.up")
+                            Image(systemName: showToolBar ? "chevron.down" : "chevron.up")
                                 .font(.system(size: 16))
-                                .foregroundColor(.gray)
+                                .foregroundColor(.white)
                         }
                     })
                 }.frame(height: 60)
@@ -160,6 +184,146 @@ struct CameraView: View {
                 
                 Spacer()
                 //bottom buttons
+                //toolbar that activates with the chevron
+                if showToolBar{
+                    VStack{
+                        ScrollView(.horizontal, showsIndicators: false){
+                        HStack{
+                            Button(action: {
+                            }, label: {
+                                ZStack{
+                                    Image(systemName: "circle.fill")
+                                        .font(.system(size: 50))
+                                        .foregroundColor(.gray)
+                                        .opacity(0.2)
+                                        
+                                    
+                                    Image(systemName: "bolt.fill")
+                                        .font(.system(size: 25))
+                                        .foregroundColor(.gray)
+                                        
+                                }
+                            }).padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 0))
+                            
+                            Button(action: {
+                            }, label: {
+                                ZStack{
+                                    Image(systemName: "circle.fill")
+                                        .font(.system(size: 50))
+                                        .foregroundColor(.gray)
+                                        .opacity(0.2)
+                                        
+                                    
+                                    Image(systemName: "moon.fill")
+                                        .font(.system(size: 25))
+                                        .foregroundColor(.gray)
+                                        
+                                }
+                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                            
+                            Button(action: {
+                            }, label: {
+                                ZStack{
+                                    Image(systemName: "circle.fill")
+                                        .font(.system(size: 50))
+                                        .foregroundColor(.gray)
+                                        .opacity(0.2)
+                                        
+                                    
+                                    Image(systemName: "livephoto")
+                                        .font(.system(size: 25))
+                                        .foregroundColor(.gray)
+                                        
+                                }
+                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                            
+                            Button(action: {
+                            }, label: {
+                                ZStack{
+                                    Image(systemName: "circle.fill")
+                                        .font(.system(size: 50))
+                                        .foregroundColor(.gray)
+                                        .opacity(0.2)
+                                        
+                                    
+                                    Image(systemName: "square.3.layers.3d.down.left")
+                                        .font(.system(size: 25))
+                                        .foregroundColor(.gray)
+                                        
+                                }
+                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                            
+                            Button(action: {
+                            }, label: {
+                                ZStack{
+                                    Image(systemName: "circle.fill")
+                                        .font(.system(size: 50))
+                                        .foregroundColor(.gray)
+                                        .opacity(0.2)
+                                        
+                                    Text("4:3")
+                                        .font(.system(size: 25))
+                                        .foregroundColor(.gray)
+                                        
+                                }
+                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                            
+                            Button(action: {
+                            }, label: {
+                                ZStack{
+                                    Image(systemName: "circle.fill")
+                                        .font(.system(size: 50))
+                                        .foregroundColor(.gray)
+                                        .opacity(0.2)
+                                        
+                                    
+                                    Image(systemName: "plusminus.circle")
+                                        .font(.system(size: 25))
+                                        .foregroundColor(.gray)
+                                        
+                                }
+                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                            
+                            Button(action: {
+                            }, label: {
+                                ZStack{
+                                    Image(systemName: "circle.fill")
+                                        .font(.system(size: 50))
+                                        .foregroundColor(.gray)
+                                        .opacity(0.2)
+                                        
+                                    
+                                    Image(systemName: "timer")
+                                        .font(.system(size: 25))
+                                        .foregroundColor(.gray)
+                                        
+                                }
+                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                            
+                            Button(action: {
+                            }, label: {
+                                ZStack{
+                                    Image(systemName: "circle.fill")
+                                        .font(.system(size: 50))
+                                        .foregroundColor(.gray)
+                                        .opacity(0.2)
+                                        
+                                    
+                                    Image(systemName: "camera.filters")
+                                        .font(.system(size: 25))
+                                        .foregroundColor(.gray)
+                                        
+                                }
+                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                            
+                        }
+                        }
+                            
+                    }.frame(maxWidth: .infinity)
+                    .frame(height: 70)
+                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        .background(Color.black)
+                }
                 ZStack {
                     HStack{
                         //thumbnails

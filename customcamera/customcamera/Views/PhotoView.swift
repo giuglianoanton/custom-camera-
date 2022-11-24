@@ -17,12 +17,12 @@ struct PhotoView: View {
             //        Image(uiImage: photo.first!)
             Image(uiImage: UIImage(cgImage: photo))
                 .resizable()
+                .scaledToFill()
                 .rotationEffect(Angle(degrees: 90))
                 .frame(width: 500, height: 500)
-                .scaledToFill()
                 .padding(EdgeInsets(top: 10, leading: 10, bottom: 50, trailing: 0))
         }
-//        .navigationTitle()
+        .navigationTitle("Photo")
         .navigationBarColor(backgroundColor: UIColor(named: "navigationbar"), titleColor: .white)
         
         //navigationbar buttons
