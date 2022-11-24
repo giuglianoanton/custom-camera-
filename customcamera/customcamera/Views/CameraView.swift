@@ -16,7 +16,7 @@ struct CameraView: View {
     @State var isFlashOn = false
     @State var flash = "bolt.slash.fill"
     @State var showToolBar = false
-   
+    @State private var camera05 = false
     //with the fetching stuff
 //    enum typeCamera {
 //        case void
@@ -184,147 +184,155 @@ struct CameraView: View {
                 
                 Spacer()
                 //bottom buttons
-                //toolbar that activates with the chevron
-                if showToolBar{
-                    VStack{
-                        ScrollView(.horizontal, showsIndicators: false){
-                        HStack{
-                            Button(action: {
-                            }, label: {
-                                ZStack{
-                                    Image(systemName: "circle.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(.gray)
-                                        .opacity(0.2)
-                                        
-                                    
-                                    Image(systemName: "bolt.fill")
-                                        .font(.system(size: 25))
-                                        .foregroundColor(.gray)
-                                        
-                                }
-                            }).padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 0))
-                            
-                            Button(action: {
-                            }, label: {
-                                ZStack{
-                                    Image(systemName: "circle.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(.gray)
-                                        .opacity(0.2)
-                                        
-                                    
-                                    Image(systemName: "moon.fill")
-                                        .font(.system(size: 25))
-                                        .foregroundColor(.gray)
-                                        
-                                }
-                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                            
-                            Button(action: {
-                            }, label: {
-                                ZStack{
-                                    Image(systemName: "circle.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(.gray)
-                                        .opacity(0.2)
-                                        
-                                    
-                                    Image(systemName: "livephoto")
-                                        .font(.system(size: 25))
-                                        .foregroundColor(.gray)
-                                        
-                                }
-                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                            
-                            Button(action: {
-                            }, label: {
-                                ZStack{
-                                    Image(systemName: "circle.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(.gray)
-                                        .opacity(0.2)
-                                        
-                                    
-                                    Image(systemName: "square.3.layers.3d.down.left")
-                                        .font(.system(size: 25))
-                                        .foregroundColor(.gray)
-                                        
-                                }
-                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                            
-                            Button(action: {
-                            }, label: {
-                                ZStack{
-                                    Image(systemName: "circle.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(.gray)
-                                        .opacity(0.2)
-                                        
-                                    Text("4:3")
-                                        .font(.system(size: 25))
-                                        .foregroundColor(.gray)
-                                        
-                                }
-                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                            
-                            Button(action: {
-                            }, label: {
-                                ZStack{
-                                    Image(systemName: "circle.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(.gray)
-                                        .opacity(0.2)
-                                        
-                                    
-                                    Image(systemName: "plusminus.circle")
-                                        .font(.system(size: 25))
-                                        .foregroundColor(.gray)
-                                        
-                                }
-                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                            
-                            Button(action: {
-                            }, label: {
-                                ZStack{
-                                    Image(systemName: "circle.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(.gray)
-                                        .opacity(0.2)
-                                        
-                                    
-                                    Image(systemName: "timer")
-                                        .font(.system(size: 25))
-                                        .foregroundColor(.gray)
-                                        
-                                }
-                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                            
-                            Button(action: {
-                            }, label: {
-                                ZStack{
-                                    Image(systemName: "circle.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundColor(.gray)
-                                        .opacity(0.2)
-                                        
-                                    
-                                    Image(systemName: "camera.filters")
-                                        .font(.system(size: 25))
-                                        .foregroundColor(.gray)
-                                        
-                                }
-                            }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
-                            
-                        }
-                        }
-                            
-                    }.frame(maxWidth: .infinity)
-                    .frame(height: 70)
-                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                        .background(Color.black)
-                }
+                
                 ZStack {
+
+                        Toggle("", isOn: $camera05)
+                            .toggleStyle(Toggle2Circle())
+                            .labelsHidden()
+                            .padding(EdgeInsets(top: 5, leading: 10, bottom: showToolBar ? 345 : 240, trailing: 10))
+                        //toolbar that activates with the chevron
+                        if showToolBar{
+                            VStack{
+                                ScrollView(.horizontal, showsIndicators: false){
+                                    HStack{
+                                        Button(action: {
+                                        }, label: {
+                                            ZStack{
+                                                Image(systemName: "circle.fill")
+                                                    .font(.system(size: 50))
+                                                    .foregroundColor(.gray)
+                                                    .opacity(0.2)
+                                                
+                                                
+                                                Image(systemName: "bolt.fill")
+                                                    .font(.system(size: 22))
+                                                    .foregroundColor(.gray)
+                                                
+                                            }
+                                        }).padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 0))
+                                        
+                                        Button(action: {
+                                        }, label: {
+                                            ZStack{
+                                                Image(systemName: "circle.fill")
+                                                    .font(.system(size: 50))
+                                                    .foregroundColor(.gray)
+                                                    .opacity(0.2)
+                                                
+                                                
+                                                Image(systemName: "moon.fill")
+                                                    .font(.system(size: 22))
+                                                    .foregroundColor(.gray)
+                                                
+                                            }
+                                        }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                                        
+                                        Button(action: {
+                                        }, label: {
+                                            ZStack{
+                                                Image(systemName: "circle.fill")
+                                                    .font(.system(size: 50))
+                                                    .foregroundColor(.gray)
+                                                    .opacity(0.2)
+                                                
+                                                
+                                                Image(systemName: "livephoto")
+                                                    .font(.system(size: 22))
+                                                    .foregroundColor(.gray)
+                                                
+                                            }
+                                        }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                                        
+                                        Button(action: {
+                                        }, label: {
+                                            ZStack{
+                                                Image(systemName: "circle.fill")
+                                                    .font(.system(size: 50))
+                                                    .foregroundColor(.gray)
+                                                    .opacity(0.2)
+                                                
+                                                
+                                                Image(systemName: "square.3.layers.3d.down.left")
+                                                    .font(.system(size: 22))
+                                                    .foregroundColor(.gray)
+                                                
+                                            }
+                                        }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                                        
+                                        Button(action: {
+                                        }, label: {
+                                            ZStack{
+                                                Image(systemName: "circle.fill")
+                                                    .font(.system(size: 50))
+                                                    .foregroundColor(.gray)
+                                                    .opacity(0.2)
+                                                
+                                                Text("4:3")
+                                                    .font(.system(size: 16))
+                                                    .foregroundColor(.gray)
+                                                
+                                            }
+                                        }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                                        
+                                        Button(action: {
+                                        }, label: {
+                                            ZStack{
+                                                Image(systemName: "circle.fill")
+                                                    .font(.system(size: 50))
+                                                    .foregroundColor(.gray)
+                                                    .opacity(0.2)
+                                                
+                                                
+                                                Image(systemName: "plusminus.circle")
+                                                    .font(.system(size: 22))
+                                                    .foregroundColor(.gray)
+                                                
+                                            }
+                                        }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                                        
+                                        Button(action: {
+                                        }, label: {
+                                            ZStack{
+                                                Image(systemName: "circle.fill")
+                                                    .font(.system(size: 50))
+                                                    .foregroundColor(.gray)
+                                                    .opacity(0.2)
+                                                
+                                                
+                                                Image(systemName: "timer")
+                                                    .font(.system(size: 22))
+                                                    .foregroundColor(.gray)
+                                                
+                                            }
+                                        }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                                        
+                                        Button(action: {
+                                        }, label: {
+                                            ZStack{
+                                                Image(systemName: "circle.fill")
+                                                    .font(.system(size: 50))
+                                                    .foregroundColor(.gray)
+                                                    .opacity(0.2)
+                                                
+                                                
+                                                Image(systemName: "camera.filters")
+                                                    .font(.system(size: 22))
+                                                    .foregroundColor(.gray)
+                                                
+                                            }
+                                        }).padding(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+                                        
+                                    }
+                                }
+                                
+                            }.frame(maxWidth: .infinity)
+                                .frame(height: 70)
+                                .padding(EdgeInsets(top: 5, leading: 0, bottom: 190, trailing: 0))
+                                .background(Color.black)
+                        
+                        
+                    }
                     HStack{
                         //thumbnails
                         if !camera.isSaved{
@@ -364,6 +372,7 @@ struct CameraView: View {
                         })
                         
                     }
+                    
                     Button(action: {
 //                        i
 //                            checkTempHasChanged()

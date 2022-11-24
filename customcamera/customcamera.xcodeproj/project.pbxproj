@@ -26,6 +26,7 @@
 		A9F1E784292EE9C9007DA366 /* ToolBarModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F1E783292EE9C9007DA366 /* ToolBarModifier.swift */; };
 		A9F1E78A292F7403007DA366 /* ExposureIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F1E789292F7403007DA366 /* ExposureIconView.swift */; };
 		A9F1E78C292F7B7F007DA366 /* LinePathModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F1E78B292F7B7F007DA366 /* LinePathModel.swift */; };
+		A9F1E78E292F9DE0007DA366 /* Toggle2CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F1E78D292F9DE0007DA366 /* Toggle2CircleModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +69,7 @@
 		A9F1E783292EE9C9007DA366 /* ToolBarModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolBarModifier.swift; sourceTree = "<group>"; };
 		A9F1E789292F7403007DA366 /* ExposureIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExposureIconView.swift; sourceTree = "<group>"; };
 		A9F1E78B292F7B7F007DA366 /* LinePathModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinePathModel.swift; sourceTree = "<group>"; };
+		A9F1E78D292F9DE0007DA366 /* Toggle2CircleModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toggle2CircleModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +201,7 @@
 			children = (
 				A9F1E789292F7403007DA366 /* ExposureIconView.swift */,
 				A9F1E78B292F7B7F007DA366 /* LinePathModel.swift */,
+				A9F1E78D292F9DE0007DA366 /* Toggle2CircleModel.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -340,6 +343,7 @@
 				A9F1E78C292F7B7F007DA366 /* LinePathModel.swift in Sources */,
 				A9F1E76D292BCAD6007DA366 /* CameraPreview.swift in Sources */,
 				A9F1E778292D09F5007DA366 /* ThumbnailView.swift in Sources */,
+				A9F1E78E292F9DE0007DA366 /* Toggle2CircleModel.swift in Sources */,
 				A9F1E73B292B9AA0007DA366 /* ContentView.swift in Sources */,
 				A9F1E78A292F7403007DA366 /* ExposureIconView.swift in Sources */,
 				A9F1E77C292E24D2007DA366 /* PhotoView.swift in Sources */,
