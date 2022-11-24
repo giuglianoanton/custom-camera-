@@ -22,6 +22,8 @@
 		A9F1E772292C4555007DA366 /* ThumbnailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F1E771292C4555007DA366 /* ThumbnailModel.swift */; };
 		A9F1E778292D09F5007DA366 /* ThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F1E777292D09F5007DA366 /* ThumbnailView.swift */; };
 		A9F1E77C292E24D2007DA366 /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F1E77B292E24D2007DA366 /* PhotoView.swift */; };
+		A9F1E780292EE5C1007DA366 /* NavigationBarModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F1E77F292EE5C0007DA366 /* NavigationBarModifier.swift */; };
+		A9F1E784292EE9C9007DA366 /* ToolBarModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F1E783292EE9C9007DA366 /* ToolBarModifier.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +62,8 @@
 		A9F1E771292C4555007DA366 /* ThumbnailModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailModel.swift; sourceTree = "<group>"; };
 		A9F1E777292D09F5007DA366 /* ThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailView.swift; sourceTree = "<group>"; };
 		A9F1E77B292E24D2007DA366 /* PhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
+		A9F1E77F292EE5C0007DA366 /* NavigationBarModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarModifier.swift; sourceTree = "<group>"; };
+		A9F1E783292EE9C9007DA366 /* ToolBarModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolBarModifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				A9F1E738292B9AA0007DA366 /* customcameraApp.swift */,
+				A9F1E785292EE9E9007DA366 /* Modifiers */,
 				A9F1E769292BCA86007DA366 /* Views */,
 				A9F1E770292C4533007DA366 /* Models */,
 				A9F1E73A292B9AA0007DA366 /* ContentView.swift */,
@@ -173,6 +178,15 @@
 				A9F1E771292C4555007DA366 /* ThumbnailModel.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		A9F1E785292EE9E9007DA366 /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				A9F1E77F292EE5C0007DA366 /* NavigationBarModifier.swift */,
+				A9F1E783292EE9C9007DA366 /* ToolBarModifier.swift */,
+			);
+			path = Modifiers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -305,7 +319,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9F1E780292EE5C1007DA366 /* NavigationBarModifier.swift in Sources */,
 				A9F1E768292BC9C5007DA366 /* CameraFrontModel.swift in Sources */,
+				A9F1E784292EE9C9007DA366 /* ToolBarModifier.swift in Sources */,
 				A9F1E766292BC7E8007DA366 /* CameraModel.swift in Sources */,
 				A9F1E76D292BCAD6007DA366 /* CameraPreview.swift in Sources */,
 				A9F1E778292D09F5007DA366 /* ThumbnailView.swift in Sources */,

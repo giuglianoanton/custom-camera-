@@ -147,8 +147,8 @@ struct CameraView: View {
                                 .foregroundColor(.gray)
                         }
                     })
-                }.frame(height: 90)
-                    .padding(EdgeInsets(top: 20, leading: 10, bottom: 0, trailing: 10))
+                }.frame(height: 60)
+                .padding(EdgeInsets(top: 0, leading: 10, bottom: 20, trailing: 10))
                 .background(Color.black)
                 
                 Spacer()
@@ -223,13 +223,16 @@ struct CameraView: View {
                     })
                   
                 }.frame(height: 120)
-                                        .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
-                                    .background(Color.black)
+                .padding(EdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0))
+                 .background(Color.black)
             }
             
         }
         
-        }
+//        .navigationBarColor(backgroundColor: .black, titleColor: .white)
+        .toolBarColor(backgroundColor: UIColor(named: "toolbar"), titleColor: .white)
+        }//needed to see the toolbar in the navigationLink
+        .navigationViewStyle(StackNavigationViewStyle())
         
     }
     
@@ -285,3 +288,16 @@ struct CameraView: View {
     
 }
 
+
+struct NavigationConfigurator: UIViewControllerRepresentable {
+    var configure: (UINavigationController) -> Void = { _ in }
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<NavigationConfigurator>) -> UIViewController {
+        UIViewController()
+    }
+    func updateUIViewController(_ uiViewController: UIViewController, context: UIViewControllerRepresentableContext<NavigationConfigurator>) {
+        if let nc = uiViewController.navigationController {
+            self.configure(nc)
+        }
+    }
+}
